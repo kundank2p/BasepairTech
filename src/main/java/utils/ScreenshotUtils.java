@@ -12,10 +12,8 @@ public class ScreenshotUtils {
         String screenshotPath = System.getProperty("user.dir") + "/test-output/screenshots/" + screenshotName + ".png";
 
         try {
-            // Capture screenshot
             File screenshotFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
-            // Save screenshot to the specified path
             FileUtils.copyFile(screenshotFile, new File(screenshotPath));
 
             Log.info("Screenshot captured: " + screenshotPath);

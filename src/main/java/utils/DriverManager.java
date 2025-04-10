@@ -7,7 +7,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 
 public class DriverManager {
 
-    // ThreadLocal allows safe parallel test execution, one driver per thread
     private static final ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     public static WebDriver getDriver() {
@@ -28,7 +27,6 @@ public class DriverManager {
     private static ChromeOptions getChromeOptions() {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--remote-allow-origins=*");
-        // Add more Chrome options if needed
         return options;
     }
 

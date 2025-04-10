@@ -8,18 +8,15 @@ public class LoginPage {
     WebDriver driver;
     WebDriverWait wait;
 
-    // Constructor
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
-    // Page Elements
     By usernameField = By.id("Login_username");
     By passwordField = By.id("Login_password");
     By loginButton = By.xpath("//button[@type='button' and .//span[text()='Log in']]");
 
-    // Actions
     public void enterUsername(String username) {
         wait.until(ExpectedConditions.visibilityOfElementLocated(usernameField)).sendKeys(username);
     }

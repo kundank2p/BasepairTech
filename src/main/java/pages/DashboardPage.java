@@ -26,7 +26,6 @@ public class DashboardPage {
         }
     }
 
-
     public void clickOnProjectTitle(String projectName) {
         By projectTitleElement = By.xpath("//h1[text()='" + projectName + "']");
         wait.until(ExpectedConditions.elementToBeClickable(projectTitleElement)).click();

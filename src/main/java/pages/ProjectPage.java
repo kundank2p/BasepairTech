@@ -2,10 +2,8 @@ package pages;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.*;
-
 import java.io.File;
 import java.time.Duration;
-import java.util.Map;
 
 public class ProjectPage {
     private final WebDriver driver;
@@ -28,13 +26,9 @@ public class ProjectPage {
         By uploadSampleBtn = By.xpath("//div[@class='sample-floating-upload']");
         wait.until(ExpectedConditions.elementToBeClickable(uploadSampleBtn)).click();
     }
-
-//    public void clickUploadIcon() {
-//        By icon = By.xpath("//i[@class='anticon anticon-inbox']");
-//        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(icon));
-//        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-//    }
-
+    private String getAbsolutePath(String fileName) {
+        return new File("src/test/resources/testdata/" + fileName).getAbsolutePath();
+    }
     public void uploadFile(String fileName) {
         WebElement input = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='file']")));
         input.sendKeys(getAbsolutePath(fileName));
@@ -47,30 +41,7 @@ public class ProjectPage {
         }
     }
 
-
-    public void uploadMultipleFiles(String[] fileNames) {
-        WebElement input = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='file']")));
-        StringBuilder allPaths = new StringBuilder();
-        for (int i = 0; i < fileNames.length; i++) {
-            allPaths.append(getAbsolutePath(fileNames[i].trim()));
-            if (i < fileNames.length - 1) {
-                allPaths.append("\n");
-            }
-        }
-        input.sendKeys(allPaths.toString());
-
-        try {
-            By previewLocator = By.xpath("//div[contains(@class, 'ant-upload-list')]//div[contains(@class,'ant-upload-list-item')]");
-            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(previewLocator, 1));
-        } catch (TimeoutException e) {
-            System.out.println("Multiple file preview not visible.");
-        }
-    }
-
-
-
-
-    public void clickButton() {
+    public void clickUploadButton() {
         By button = By.xpath("//button[@class='ant-btn ant-btn-primary']");
         WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(button));
         try {
@@ -83,29 +54,18 @@ public class ProjectPage {
         ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
 
-
-
-    public boolean isUploadSuccess() {
+    public boolean isUploadSuccessful() {
         try {
-            By toast = By.xpath("//*[contains(text(),'Upload successful') or contains(text(),'successfully uploaded')]");
-            wait.until(ExpectedConditions.visibilityOfElementLocated(toast));
-            return true;
+            By successMsg = By.xpath("//*[contains(text(),'Sample added successfully')]");
+
+            WebDriverWait longWait = new WebDriverWait(driver, Duration.ofSeconds(20));
+            WebElement successElement = longWait.until(ExpectedConditions.visibilityOfElementLocated(successMsg));
+
+            return successElement.isDisplayed();
+
         } catch (TimeoutException e) {
+            System.out.println("Success message not visible after waiting 20 seconds.");
             return false;
         }
-    }
-
-    public boolean areMultipleFilesUploaded() {
-        try {
-            By toast = By.xpath("//*[contains(text(),'All files uploaded successfully') or contains(text(),'successfully uploaded')]");
-            wait.until(ExpectedConditions.visibilityOfElementLocated(toast));
-            return true;
-        } catch (TimeoutException e) {
-            return false;
-        }
-    }
-
-    private String getAbsolutePath(String fileName) {
-        return new File("src/test/resources/testdata/" + fileName).getAbsolutePath();
     }
 }

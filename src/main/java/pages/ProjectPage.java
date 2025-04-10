@@ -29,16 +29,24 @@ public class ProjectPage {
         wait.until(ExpectedConditions.elementToBeClickable(uploadSampleBtn)).click();
     }
 
-    public void clickUploadIcon() {
-        By icon = By.xpath("//i[@class='anticon anticon-inbox']");
-        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(icon));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-    }
+//    public void clickUploadIcon() {
+//        By icon = By.xpath("//i[@class='anticon anticon-inbox']");
+//        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(icon));
+//        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+//    }
 
     public void uploadFile(String fileName) {
         WebElement input = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='file']")));
         input.sendKeys(getAbsolutePath(fileName));
+
+        try {
+            By previewLocator = By.xpath("//div[contains(@class, 'ant-upload-list')]//div[contains(@class,'ant-upload-list-item')]");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(previewLocator));
+        } catch (TimeoutException e) {
+            System.out.println("File preview not visible after upload.");
+        }
     }
+
 
     public void uploadMultipleFiles(String[] fileNames) {
         WebElement input = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='file']")));
@@ -50,57 +58,32 @@ public class ProjectPage {
             }
         }
         input.sendKeys(allPaths.toString());
-    }
-
-    public void fillMetadata(Map<String, String> metadata) {
-
-        if (metadata.containsKey("Platform")) {
-            selectDropdown("Platform", metadata.get("Platform"));
-        }
-        if (metadata.containsKey("Data type")) {
-            selectDropdown("Data type", metadata.get("Data type"));
-        }
-        if (metadata.containsKey("Stranded") && !metadata.get("Stranded").isBlank()) {
-            selectDropdown("Stranded", metadata.get("Stranded"));
-        }
-        if (metadata.containsKey("Spike in") && !metadata.get("Spike in").isBlank()) {
-            selectDropdown("Spike in", metadata.get("Spike in"));
-        }
-        if (metadata.containsKey("Genome")) {
-            selectDropdown("Genome", metadata.get("Genome"));
-        }
-        if (metadata.containsKey("Pipeline") && !metadata.get("Pipeline").isBlank()) {
-            selectDropdown("Pipeline", metadata.get("Pipeline"));
-        }
-    }
-
-    public void selectDropdown(String labelText, String valueToSelect) {
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 
         try {
-            // Click the dropdown box next to the label
-            WebElement dropdownTrigger = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//label[contains(text(),'" + labelText + "')]/following-sibling::div//div[contains(@class,'ant-select-selector')]")
-            ));
-            dropdownTrigger.click();
-
-            // Wait for the option panel and select value
-            WebElement dropdownOption = wait.until(ExpectedConditions.elementToBeClickable(
-                    By.xpath("//div[contains(@class,'ant-select-dropdown')]//div[@role='option' and normalize-space(text())='" + valueToSelect + "']")
-            ));
-            dropdownOption.click();
-
+            By previewLocator = By.xpath("//div[contains(@class, 'ant-upload-list')]//div[contains(@class,'ant-upload-list-item')]");
+            wait.until(ExpectedConditions.numberOfElementsToBeMoreThan(previewLocator, 1));
         } catch (TimeoutException e) {
-            System.out.println("Dropdown '" + labelText + "' or option '" + valueToSelect + "' not found.");
-            throw e;
+            System.out.println("Multiple file preview not visible.");
         }
     }
 
 
-    public void clickButton(String xpath) {
+
+
+    public void clickButton() {
         By button = By.xpath("//button[@class='ant-btn ant-btn-primary']");
-        wait.until(ExpectedConditions.elementToBeClickable(button)).click();
+        WebElement element = wait.until(ExpectedConditions.presenceOfElementLocated(button));
+        try {
+            By previewLocator = By.xpath("//div[contains(@class, 'ant-upload-list')]//div[contains(@class,'ant-upload-list-item')]");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(previewLocator));
+        } catch (TimeoutException e) {
+            System.out.println("Upload preview not visible before clicking submit.");
+        }
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block: 'center'});", element);
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
     }
+
+
 
     public boolean isUploadSuccess() {
         try {

@@ -1,14 +1,17 @@
 package stepDefinitions;
 
 import io.cucumber.java.en.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import pages.ProjectPage;
 import utils.DriverManager;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.Duration;
 
 public class UploadSampleSteps {
 
@@ -27,10 +30,6 @@ public class UploadSampleSteps {
         projectPage.clickUploadSampleSection(sectionName);
     }
 
-    @When("the user clicks the upload icon")
-    public void userClicksUploadIcon() {
-        projectPage.clickUploadIcon();
-    }
 
     @When("the user selects a file named {string} from testdata")
     public void userSelectsFile(String fileName) {
@@ -43,33 +42,25 @@ public class UploadSampleSteps {
         projectPage.uploadMultipleFiles(files);
     }
 
-    @When("the user fills in the metadata")
-    public void userFillsMetadata(io.cucumber.datatable.DataTable dataTable) {
-        List<List<String>> rows = dataTable.asLists();
-
-        for (List<String> row : rows) {
-            if (row.size() == 2) {
-                String field = row.get(0).trim();
-                String value = row.get(1) != null ? row.get(1).trim() : "";
-
-                // Skip if value is marked as [empty]
-                if (!value.equalsIgnoreCase("[empty]")) {
-                    projectPage.selectDropdown(field, value);
-                }
-            }
-        }
-
-
-    }
-
     @When("the user clicks the Upload samples button")
-    public void userClicksButtonSubmit(String xpath) {
-        projectPage.clickButton(xpath);
+    public void userClicksButtonSubmit() {
+        projectPage.clickButton();
     }
 
     @Then("the file should be uploaded successfully")
     public void verifySingleFileUploadSuccess() {
-        Assert.assertTrue(projectPage.isUploadSuccess(), "File was not uploaded successfully");
+        WebDriver driver = DriverManager.getDriver();
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+        try {
+            By successMsg = By.xpath("//span[@class='ant-alert-message' and contains(text(),'Sample added successfully.')]");
+            WebElement successElement = wait.until(ExpectedConditions.visibilityOfElementLocated(successMsg));
+
+            Assert.assertTrue(successElement.isDisplayed(), "File was not uploaded successfully");
+
+        } catch (TimeoutException e) {
+            Assert.fail("Success message not visible after upload");
+        }
     }
 
     @Then("all selected files should be uploaded successfully")

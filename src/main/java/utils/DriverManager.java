@@ -21,7 +21,7 @@ public class DriverManager {
         ChromeDriver chromeDriver = new ChromeDriver(getChromeOptions());
         chromeDriver.manage().window().maximize();
         driver.set(chromeDriver);
-        System.out.println("Initialized WebDriver instance: " + chromeDriver);  //  debug log
+        System.out.println("Initialized WebDriver instance: " + chromeDriver); 
     }
 
     private static ChromeOptions getChromeOptions() {
@@ -32,9 +32,13 @@ public class DriverManager {
 
     public static void quitDriver() {
         if (driver.get() != null) {
-            System.out.println("Quitting WebDriver instance: " + driver.get());  //  debug log
+            System.out.println("Quitting WebDriver instance: " + driver.get()); 
             driver.get().quit();
+<<<<<<< HEAD
             driver.remove();
+=======
+            driver.remove(); 
+>>>>>>> ae68edb6d276db1c0566db3b409c4a046347e866
         }
     }
 }

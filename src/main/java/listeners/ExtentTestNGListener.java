@@ -12,6 +12,8 @@ import utils.ScreenshotUtils;
 public class ExtentTestNGListener implements ITestListener {
     @Override
     public void onTestStart(ITestResult result) {
+        System.out.println("onTestStart triggered for: " + result.getName());
+
         // Create a test in the Extent Report
         ExtentReportManager.createTest(result.getMethod().getMethodName());
         Log.info("Test started: " + result.getName());

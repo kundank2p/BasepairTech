@@ -13,7 +13,7 @@ public class LoginSteps {
 
     @Given("the user is on the login page")
     public void userOnLoginPage() {
-        driver = DriverManager.getDriver(); //  always
+        driver = DriverManager.getDriver();
         driver.manage().window().maximize();
         driver.get("https://test.basepairtech.com/login?next=/");
 

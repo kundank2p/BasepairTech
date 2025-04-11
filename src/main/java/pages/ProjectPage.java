@@ -68,4 +68,39 @@ public class ProjectPage {
             return false;
         }
     }
+    public void uploadMultipleFiles(String[] fileNames) {
+        WebElement input = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[type='file']")));
+
+        StringBuilder filePaths = new StringBuilder();
+        for (String file : fileNames) {
+            filePaths.append(getAbsolutePath(file.trim())).append("\n"); // newline-separated for multi-upload
+        }
+        input.sendKeys(filePaths.toString().trim());
+
+        try {
+            By previewLocator = By.xpath("//div[contains(@class, 'ant-upload-list')]//div[contains(@class,'ant-upload-list-item')]");
+            wait.until(ExpectedConditions.visibilityOfElementLocated(previewLocator));
+        } catch (TimeoutException e) {
+            System.out.println("File preview not visible after multiple file upload.");
+        }
+    }
+
+    public boolean isValidationErrorVisible() {
+        try {
+            By errorLocator = By.xpath("//*[contains(text(),'Please select a file') or contains(text(),'required')]");
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(errorLocator)).isDisplayed();
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
+    public boolean isUnsupportedFileTypeErrorVisible() {
+        try {
+            By errorLocator = By.xpath("//*[contains(text(),'unsupported') or contains(text(),'not allowed')]");
+            return wait.until(ExpectedConditions.visibilityOfElementLocated(errorLocator)).isDisplayed();
+        } catch (TimeoutException e) {
+            return false;
+        }
+    }
+
 }

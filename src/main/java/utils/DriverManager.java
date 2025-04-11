@@ -34,7 +34,7 @@ public class DriverManager {
         if (driver.get() != null) {
             System.out.println("Quitting WebDriver instance: " + driver.get());  //  debug log
             driver.get().quit();
-            driver.remove(); // Clean up for this thread
+            driver.remove();
         }
     }
 }

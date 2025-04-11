@@ -37,4 +37,26 @@ public class UploadSampleSteps {
     public void verifySingleFileUploadSuccess() {
         Assert.assertTrue(projectPage.isUploadSuccessful(), "File was not uploaded successfully");
     }
+
+    @When("the user selects files named {string} from testdata")
+    public void userSelectsMultipleFiles(String files) {
+        String[] fileList = files.split(",");
+        projectPage.uploadMultipleFiles(fileList);
+    }
+
+    @Then("the files should be uploaded successfully")
+    public void verifyMultipleFilesUpload() {
+        Assert.assertTrue(projectPage.isUploadSuccessful(), "Files were not uploaded successfully");
+    }
+
+    @Then("a validation error should be displayed")
+    public void verifyValidationError() {
+        Assert.assertTrue(projectPage.isValidationErrorVisible(), "Validation error was not displayed");
+    }
+
+    @Then("an error message should be displayed for unsupported format")
+    public void verifyUnsupportedFileError() {
+        Assert.assertTrue(projectPage.isUnsupportedFileTypeErrorVisible(), "Unsupported file type error was not displayed");
+    }
+
 }
